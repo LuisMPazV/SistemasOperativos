@@ -5,20 +5,33 @@ public class Monitoria {
 
 	public static void main(String[] args) {
 		
-		long Semilla=2000000;
+		long semilla=2000000;
 		
-		Semaphore monitorDormido;
-		Semaphore corredor;
-		Semaphore monitorDisponible;
+		Semaphore monitorSleeping;
+		Semaphore firstChair;
+		Semaphore secondChair;
+		Semaphore thirdChair;
+		Semaphore monitorAvailable;
 		
-		corredor=new Semaphore(3, true);
-		monitorDisponible=new Semaphore(1, true);
-		monitorDormido=new Semaphore(1, true);
+		monitorSleeping=new Semaphore(1, true);
+		firstChair=new Semaphore(1, true);
+		secondChair=new Semaphore(1, true);
+		thirdChair=new Semaphore(1, true);
+		monitorAvailable=new Semaphore(1, true);
 		
 		ArrayList<Student> estudiantes=new ArrayList<>();
 		
 		Monitor monitor;
 		
+		for (int i = 0; i < 10; i++) {
+			estudiantes.add(new Student(monitorSleeping, firstChair, secondChair, thirdChair, monitorAvailable, String.valueOf(i), semilla));
+		}
+		monitor=new Monitor(monitorSleeping, firstChair, secondChair, thirdChair, monitorAvailable, "Mateo", semilla);
+		monitor.start();
+		
+		for (int i = 0; i < 10; i++) {
+			estudiantes.get(i).start();
+		}
 
 	}
 

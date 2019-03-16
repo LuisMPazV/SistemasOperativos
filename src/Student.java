@@ -57,8 +57,11 @@ public class Student extends Thread {
 					monitorAvailable.acquire();
 					System.out.println("El estudiante "+name+" esta siendo atendido por el monitor");
 					firstChair.release();
-					sleep(1000);
-					monitorAvailable.release();
+					while(monitorAvailable.availablePermits()==0) {
+						
+					}
+					System.out.println("El estudiante "+name+" ha sido atendido y ahora tiene menos dudas.");
+					
 				}else {
 					System.out.println("El corredor esta lleno, el estudiante "+name+" ira a la sala de computo y regresara en un rato");
 					sleep(10000);
