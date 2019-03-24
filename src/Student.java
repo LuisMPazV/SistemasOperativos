@@ -81,9 +81,11 @@ public class Student extends Thread {
 					}
 				} else {
 					// Ocupa al monitor
-					monitor.acquire();
+					if(monitor.tryAcquire())
 					System.out.println(
 							"--[" + name + "] Desperte al monitor y entre al salon para iniciar mi monitoria.");
+					else
+						continue;
 					// Espera mientras lo atienden y mientras le surge otra duda
 					sleep(Math.abs(randGen.nextInt()) % 100000);
 				}
