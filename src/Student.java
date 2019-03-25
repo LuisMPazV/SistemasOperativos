@@ -7,37 +7,25 @@ import java.util.concurrent.Semaphore;
 
 public class Student extends Thread {
 
-//	private Semaphore monitorSleeping;
-//	private Semaphore firstChair;
-//	private Semaphore secondChair;
-//	private Semaphore thirdChair;
-//	private Semaphore monitorAvailable;
-
-	private Semaphore monitor; // Semaforo del monitor(lo despierta)
-	private Semaphore chairs; // Usado para si hay sillas disponibles
-	private String name; // Nombre del estudiante
-	private Random randGen; // Generador de numeros aleatorios
+	/**
+	 * Semaforo del monitor (lo despierta)
+	 */
+	private Semaphore monitor;
 
 	/**
-	 * @param monitorSleeping
-	 * @param firstChair
-	 * @param secondChair
-	 * @param thirdChair
-	 * @param monitorAvailable
-	 * @param name
-	 * @param randGen
+	 * Usado para si hay sillas disponibles
 	 */
-//	public Student(Semaphore monitorSleeping, Semaphore firstChair, Semaphore secondChair, Semaphore thirdChair,
-//			Semaphore monitorAvailable, String name, long randGen) {
-//		super();
-//		this.monitorSleeping = monitorSleeping;
-//		this.firstChair = firstChair;
-//		this.secondChair = secondChair;
-//		this.thirdChair = thirdChair;
-//		this.monitorAvailable = monitorAvailable;
-//		this.name = name;
-//		this.randGen = new Random(randGen);
-//	}
+	private Semaphore chairs;
+
+	/**
+	 * Nombre del estudiante
+	 */
+	private String name;
+
+	/**
+	 * Generador de numeros aleatorios
+	 */
+	private Random randGen;
 
 	/**
 	 * Constructor de la clase - Inicializa todos los datos requeridos
@@ -55,41 +43,106 @@ public class Student extends Thread {
 		this.randGen = new Random(randGen);
 	}
 
+	/**
+	 * Metodo run del hilo estuadiante, que permite al estudiante entrar a la sala
+	 * del monitor. Si el monitor esta dormido lo despierta y sino, revisa si hay
+	 * sillas disponibles si no hay sillas disponibles se va para la sala de computo
+	 * a esperar, y si hay sillas disponibles se sienta y espera hasta que sea su
+	 * turno de entrar.
+	 * 
+	 * Cuando un estudiante es atendido el hilo se duerme durante hasta 1 minuto
+	 * representando el tiempo que dura la monitoria y el tiempo que no este
+	 * intentand ir a una monitoria.
+	 * 
+	 * Cuando un estudiante va a la sala de espera, el hilo se duerme hasta 5
+	 * segundos representando el tiempo que el estudiante utilizaria para ir esperar
+	 * y volver a la monitoria.
+	 * 
+	 */
 	@Override
 	public void run() {
 		super.run();
 		while (true) {
 			try {
 
-				if (monitor.availablePermits() == 0) { // Si el monitor esta ocupado entra
-					if (chairs.availablePermits() > 0) { // Si hay sillas disponibles entra
+				// Si el monitor esta atendiendo a otro estudiante, se entra al cuarto donde
+				// estan las sillas(el if)
+				if (monitor.availablePermits() == 0) {
+
+					// Si hay sillas disponibles se entra al cuarto donde estan las sillas(el if)
+					if (chairs.availablePermits() > 0) {
+
 						// El estudiante se sienta
 						chairs.acquire();
-						System.out.println("-[" + name + "] Estoy sentado esperando mi turno para la monitoria.");
-						// Espera hasta que el monitor este disponible
+						System.out.println("--[" + name + "] Estoy sentado esperando mi turno para la monitoria.");
+
+						// El estudiante espera hasta que el monitor este disponible
 						monitor.acquire();
-						// Desocupa la silla
+
+						// El estudiante desocupa la silla en la que estaba sentado
 						chairs.release();
-						System.out.println("--[" + name + "] El monitor me esta atendiendo.");
-						// Espera mientras lo atienden y mientras le surge otra duda
-						sleep(Math.abs(randGen.nextInt()) % 100000);
-					} else {
-						System.out
-								.println("-[" + name + "] El monitor esta ocupado, ire a la sala de computo un rato.");
-						// Espera del estudiante en la sala de computo
+						System.out.println("-[" + name + "] El monitor me esta atendiendo.");
+
+						// El estudiante espera mientras lo atienden y se va
 						sleep(Math.abs(randGen.nextInt()) % 10000);
+
+					} else {
+
+						// El estudiante espera en la sala de computo
+						System.out
+								.println("---[" + name + "] El monitor esta ocupado, ire a la sala de computo un rato.");
+						sleep(Math.abs(randGen.nextInt()) % 1000);
 					}
 				} else {
-					// Ocupa al monitor
-					if(monitor.tryAcquire())
-					System.out.println(
-							"--[" + name + "] Desperte al monitor y entre al salon para iniciar mi monitoria.");
-					else
-						continue;
-					// Espera mientras lo atienden y mientras le surge otra duda
-					sleep(Math.abs(randGen.nextInt()) % 100000);
-				}
 
+					// El estudiante entra a la monitoria si no hay otro estudiante
+					if (monitor.tryAcquire()) {
+
+						// El estudiante espera mientras lo atienden y se va
+						System.out.println(
+								"-[" + name + "] Desperte al monitor y entre al salon para iniciar mi monitoria.");
+						sleep(Math.abs(randGen.nextInt()) % 10000);
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+//	private Semaphore monitorSleeping;
+//	private Semaphore firstChair;
+//	private Semaphore secondChair;
+//	private Semaphore thirdChair;
+//	private Semaphore monitorAvailable;
+
+//	/**
+//	 * @param monitorSleeping
+//	 * @param firstChair
+//	 * @param secondChair
+//	 * @param thirdChair
+//	 * @param monitorAvailable
+//	 * @param name
+//	 * @param randGen
+//	 */
+//	public Student(Semaphore monitorSleeping, Semaphore firstChair, Semaphore secondChair, Semaphore thirdChair,
+//			Semaphore monitorAvailable, String name, long randGen) {
+//		super();
+//		this.monitorSleeping = monitorSleeping;
+//		this.firstChair = firstChair;
+//		this.secondChair = secondChair;
+//		this.thirdChair = thirdChair;
+//		this.monitorAvailable = monitorAvailable;
+//		this.name = name;
+//		this.randGen = new Random(randGen);
+//	}
+
+//	@Override
+//	public void run() {
+//		super.run();
+//		while (true) {
+//			try {
 //				if (thirdChair.tryAcquire()) {
 //					System.out.println(
 //							"El estudiante " + name + " ha consegido sentarse en la tercera silla del corredor.");
@@ -118,10 +171,10 @@ public class Student extends Thread {
 //							+ " ira a la sala de computo y regresara en un rato");
 //					sleep(10000);
 //				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 
 }
