@@ -84,7 +84,7 @@ public class Student extends Thread {
 						System.out.println("-[" + name + "] El monitor me esta atendiendo.");
 
 						// El estudiante espera mientras lo atienden y se va
-						sleep(Math.abs(randGen.nextInt()) % 10000);
+						sleep(Math.abs(randGen.nextInt()) % 40000);
 
 					} else {
 
@@ -101,7 +101,7 @@ public class Student extends Thread {
 						// El estudiante espera mientras lo atienden y se va
 						System.out.println(
 								"-[" + name + "] Desperte al monitor y entre al salon para iniciar mi monitoria.");
-						sleep(Math.abs(randGen.nextInt()) % 10000);
+						sleep(Math.abs(randGen.nextInt()) % 40000);
 					}
 
 				}

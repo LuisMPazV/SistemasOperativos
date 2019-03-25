@@ -63,7 +63,7 @@ public class Monitor extends Thread {
 
 					// La espera del monitor mientras atiende al estudiante
 					System.out.println("-[" + name + "]Estoy atendiendo a un estudiante.");
-					sleep(Math.abs(randGen.nextInt()) % 500);
+					sleep(Math.abs(randGen.nextInt()) % 1000);
 
 					// El monitor queda disponible
 					monitor.release();

@@ -11,7 +11,7 @@ public class Monitoria {
 
 		long semilla = 2000000;
 
-		// Instanciar los semáforos requeridos
+		// Instanciar los semaforos requeridos
 		Semaphore s_monitor;
 		Semaphore chairs;
 
@@ -27,7 +27,7 @@ public class Monitoria {
 		// Semaforo contador (Representa las sillas)
 		chairs = new Semaphore(3, true);
 
-		// Añade 10 estudiantes al arreglo de estudiantes
+		// Anade 10 estudiantes al arreglo de estudiantes
 		for (int i = 0; i < 10; i++) {
 
 			// Inicializa un estudiante
